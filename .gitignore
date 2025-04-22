@@ -34,3 +34,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+vars.json
+vars.tf
