@@ -1,3 +1,25 @@
+variable "proxmox_user" {
+  description = "Proxmox API user"
+  type        = string
+}
+
+variable "proxmox_password" {
+  description = "Proxmox API password"
+  type        = string
+  sensitive   = true
+}
+
+variable "ssh_key" {
+  description = "SSH public key for authentication"
+  type        = string
+}
+
+variable "device_password" {
+  description = "Password for the LXC container"
+  type        = string
+  sensitive   = true
+}
+
 terraform {
   required_providers {
     proxmox = {
