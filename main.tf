@@ -14,6 +14,12 @@ variable "ssh_key" {
   type        = string
 }
 
+variable "ssh_private_key" {
+  description = "SSH private key for authentication"
+  type        = string
+  sensitive   = true
+}
+
 variable "device_password" {
   description = "Password for the LXC container"
   type        = string
@@ -67,7 +73,7 @@ resource "proxmox_lxc" "basic" {
   connection {
     host = "${self.hostname}.jasoncorp.lan"
     user = "root"
-    private_key = file("~/.ssh/terraform")
+    private_key = var.ssh_private_key
     agent = false
     timeout = "3m"
   } 
