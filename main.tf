@@ -73,7 +73,6 @@ resource "proxmox_lxc" "basic" {
   unprivileged = true
   # onboot       = true
   start        = true
-  vmid         = var.vmid
 
 
   // Terraform will crash without rootfs defined
@@ -118,7 +117,60 @@ provisioner "remote-exec" {
   }
  
 }
+resource "proxmox_lxc" "basic2" {
+  target_node  = var.lxc_target_node
+  hostname     = var.lxc_hostname
+  count        = 1
+  ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
+  ssh_public_keys = var.ssh_key
+  password     =  var.device_password
+  unprivileged = true
+  # onboot       = true
+  start        = true
 
+
+  // Terraform will crash without rootfs defined
+  rootfs {
+    storage = "local-lvm"
+    size    = "8G"
+  }
+
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+  }
+
+  
+  connection {
+    host = "${self.hostname}.jasoncorp.lan"
+    user = "root"
+    private_key = var.ssh_private_key
+    agent = false
+    timeout = "3m"
+  } 
+provisioner "remote-exec" {
+    inline = [
+        "apt-get update -y",
+        "apt-get install -y sudo",
+        "useradd -m jason -s /bin/bash",
+        "echo jason:${var.device_password}| chpasswd",
+        "usermod -aG sudo jason",
+        "mkdir /home/jason/.ssh",
+        "chmod 700 /home/jason/.ssh",
+        "echo ${var.ssh_key} >> /home/jason/.ssh/authorized_keys",
+        "chmod 600 /home/jason/.ssh/authorized_keys",
+        "chown -R jason:jason /home/jason/.ssh",
+        "echo 'Provisioned Jason on ${self.hostname}'",
+   ]
+    
+  }
+   provisioner "file" {
+    content     = "template used: ${self.ostemplate}"
+    destination = "/tmp/file.log"
+  }
+ 
+}
 
 resource "local_file" "ansible" {
       content  = "template used: ${proxmox_lxc.basic.0.ostemplate}"
