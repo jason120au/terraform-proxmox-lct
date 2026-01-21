@@ -32,6 +32,13 @@ variable "lxc_hostname" {
   default     = "vault"
 }
 
+variable "lxc_target_node" {
+  description = "Target Proxmox node for the LXC container"
+  type        = string
+  default     = "dellt30proxmox"
+}
+
+
 terraform {
   required_providers {
     proxmox = {
@@ -52,14 +59,13 @@ provider "proxmox" {
 
 
 resource "proxmox_lxc" "basic" {
-  target_node  = "dellt30proxmox"
+  target_node  = var.lxc_target_node
   hostname     = var.lxc_hostname
   count        = 1
   ostemplate   = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
   unprivileged = true
-  vmid         = "200${count.index}"
   # onboot       = true
   start        = true
   
