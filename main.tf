@@ -65,7 +65,7 @@ provider "proxmox" {
 
 resource "proxmox_lxc" "basic" {
   target_node  = var.lxc_target_node
-  hostname     = var.lxc_hostname
+  hostname     = "test-lxctc"
   count        = 1
   ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
@@ -119,7 +119,7 @@ provisioner "remote-exec" {
 }
 resource "proxmox_lxc" "basic2" {
   target_node  = var.lxc_target_node
-  hostname     = var.lxc_hostname
+  hostname     =  "testlxctc"
   count        = 1
   ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
