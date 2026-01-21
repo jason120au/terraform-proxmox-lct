@@ -67,6 +67,7 @@ resource "proxmox_lxc" "basic" {
   target_node  = var.lxc_target_node
   hostname     = "test-lxctc"
   count        = 1
+  cores        = 2
   ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
@@ -121,6 +122,7 @@ resource "proxmox_lxc" "basic2" {
   target_node  = var.lxc_target_node
   hostname     =  "testlxctc"
   count        = 1
+  cores        = 4
   ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
