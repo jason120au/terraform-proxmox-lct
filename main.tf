@@ -38,6 +38,11 @@ variable "lxc_target_node" {
   default     = "dellt30proxmox"
 }
 
+variable "vmid" {
+  description = "VM ID for the LXC container"
+  type        = number
+  default     = 0
+}
 
 terraform {
   required_providers {
@@ -68,7 +73,8 @@ resource "proxmox_lxc" "basic" {
   unprivileged = true
   # onboot       = true
   start        = true
-  
+  vmid         = var.vmid
+
 
   // Terraform will crash without rootfs defined
   rootfs {
