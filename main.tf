@@ -62,7 +62,7 @@ resource "proxmox_lxc" "basic" {
   target_node  = var.lxc_target_node
   hostname     = var.lxc_hostname
   count        = 1
-  ostemplate   = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+  ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
   unprivileged = true
@@ -95,7 +95,7 @@ provisioner "remote-exec" {
         "apt-get update -y",
         "apt-get install -y sudo",
         "useradd -m jason -s /bin/bash",
-        "echo jason:ThoMas879| chpasswd",
+        "echo jason:${var.device_password}| chpasswd",
         "usermod -aG sudo jason",
         "mkdir /home/jason/.ssh",
         "chmod 700 /home/jason/.ssh",
