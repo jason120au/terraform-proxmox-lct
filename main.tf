@@ -15,9 +15,9 @@ variable "ssh_key" {
 }
 
 variable "ssh_private_key" {
-  description = "SSH private key for authentication"
+  description = "Path to SSH private key file for authentication"
   type        = string
-  sensitive   = true
+  default     = "~/.ssh/id_ed25519"
 }
 
 variable "device_password" {
@@ -35,7 +35,7 @@ variable "lxc_hostname" {
 variable "lxc_target_node" {
   description = "Target Proxmox node for the LXC container"
   type        = string
-  default     = "dellt30proxmox"
+  default     = "minisforum"
 }
 
 variable "vmid" {
@@ -68,7 +68,7 @@ resource "proxmox_lxc" "basic" {
   hostname     = "test-lxctc"
   count        = 1
   cores        = 2
-  ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
+  ostemplate   = "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
   unprivileged = true
@@ -78,7 +78,7 @@ resource "proxmox_lxc" "basic" {
 
   // Terraform will crash without rootfs defined
   rootfs {
-    storage = "local-lvm"
+    storage = "lvm-min"
     size    = "8G"
   }
 
@@ -92,7 +92,7 @@ resource "proxmox_lxc" "basic" {
   connection {
     host = "${self.hostname}.jasoncorp.lan"
     user = "root"
-    private_key = var.ssh_private_key
+    private_key = file(pathexpand(var.ssh_private_key))
     agent = false
     timeout = "3m"
   } 
@@ -123,7 +123,7 @@ resource "proxmox_lxc" "basic2" {
   hostname     =  "testlxctc"
   count        = 1
   cores        = 4
-  ostemplate   = "local:vztmpl/debian-13-standard_13.1-1_amd64.tar.zst"
+  ostemplate   = "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
   ssh_public_keys = var.ssh_key
   password     =  var.device_password
   unprivileged = true
@@ -133,7 +133,7 @@ resource "proxmox_lxc" "basic2" {
 
   // Terraform will crash without rootfs defined
   rootfs {
-    storage = "local-lvm"
+    storage = "lvm-min"
     size    = "8G"
   }
 
@@ -147,7 +147,7 @@ resource "proxmox_lxc" "basic2" {
   connection {
     host = "${self.hostname}.jasoncorp.lan"
     user = "root"
-    private_key = var.ssh_private_key
+    private_key = file(pathexpand(var.ssh_private_key))
     agent = false
     timeout = "3m"
   } 
